@@ -8,7 +8,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-22.04, windows-2022, macos-13, macos-14 ]
+        os: [ ubuntu-22.04 ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
 
       - name: Build wheels
         run: poetry build --format wheel
-        
+
   publish:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
