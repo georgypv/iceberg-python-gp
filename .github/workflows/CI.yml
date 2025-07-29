@@ -44,6 +44,11 @@ jobs:
     runs-on: ubuntu-latest
     needs:
     - build
+    environment:
+      name: pypi
+      url: https://pypi.org/p/pyiceberg-gp 
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
     steps:
       - name: Download all the dists
         uses: actions/download-artifact@v4
@@ -57,5 +62,4 @@ jobs:
           packages_dir: dist/
           skip_existing: true
           repository_url: https://test.pypi.org/legacy/
-        env:
-          PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        
