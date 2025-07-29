@@ -1,14 +1,9 @@
 name: Publish Python Package
 
-on:
-  workflow_call:
-    inputs:
-      VERSION:
-        required: true
-        type: string
+on: push
 
 jobs:
-  build-and-publish:
+  build:
     name: Build artifacts for PyPi on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -32,11 +27,6 @@ jobs:
       - name: Install Poetry
         run: make install poetry
 
-      - name: Set version with RC
-        env:
-          VERSION: ${{ inputs.VERSION }}
-        run: python -m poetry version "${{ env.VERSION }}"
-
       # Publish the source distribution with the version that's in
       # the repository, otherwise the tests will fail
       - name: Compile source distribution
@@ -45,6 +35,18 @@ jobs:
 
       - name: Build wheels
         run: poetry build --format wheel
+        
+  publish:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    needs:
+    - build
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
