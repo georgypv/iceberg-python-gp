@@ -25,13 +25,10 @@ jobs:
             3.12
 
       - name: Install Poetry
-        run: make install poetry
+        run: pipx install poetry
 
-      # Publish the source distribution with the version that's in
-      # the repository, otherwise the tests will fail
-      - name: Compile source distribution
-        run: python3 -m poetry build --format=sdist
-        if: startsWith(matrix.os, 'ubuntu')
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root
 
       - name: Build wheels
         run: poetry build --format wheel
